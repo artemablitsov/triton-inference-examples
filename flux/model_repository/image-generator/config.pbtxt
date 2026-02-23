@@ -1,0 +1,76 @@
+# Имя модели (должно строго совпадать с названием папки в model_repository)
+name: "image-generator"
+
+# Используем бэкенд на Python
+backend: "python"
+
+# Отключаем авто-батчинг (0). 
+max_batch_size: 0
+
+# ==========================================
+# ВХОДНЫЕ ПАРАМЕТРЫ (INPUTS)
+# ==========================================
+input [
+  {
+    name: "prompt"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+    # Обязательный параметр (optional: false по умолчанию)
+  },
+  {
+    name: "num_inference_steps"
+    data_type: TYPE_INT32
+    dims: [ 1 ]
+    optional: true
+  },
+  {
+    name: "guidance_scale"
+    data_type: TYPE_FP32
+    dims: [ 1 ]
+    optional: true
+  },
+  {
+    name: "width"
+    data_type: TYPE_INT32
+    dims: [ 1 ]
+    optional: true
+  },
+  {
+    name: "height"
+    data_type: TYPE_INT32
+    dims: [ 1 ]
+    optional: true
+  },
+  {
+    name: "seed"
+    data_type: TYPE_INT64
+    dims: [ 1 ]
+    optional: true
+  }
+]
+
+# ==========================================
+# ВЫХОДНЫЕ ПАРАМЕТРЫ (OUTPUTS)
+# ==========================================
+output [
+  {
+    name: "image_bytes"
+    data_type: TYPE_STRING
+    dims: [ 1 ]
+    # Возвращаем готовую картинку в виде байтов (PNG)
+  }
+]
+
+# ==========================================
+# НАСТРОЙКИ ОБОРУДОВАНИЯ (INSTANCE GROUP)
+# ==========================================
+instance_group [
+  {
+    # Разворачиваем 1 экземпляр модели
+    count: 1
+    # Строго на видеокарте (GPU)
+    kind: KIND_GPU
+    # Можно явно указать ID видеокарты, если их в сервере несколько (например, gpus: [ 0 ])
+  }
+]
+
